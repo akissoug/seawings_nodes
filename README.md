@@ -1,4 +1,4 @@
-# SeaWings Safety Monitor System
+# SeaWings System
 
 A comprehensive ROS2-based monitoring system for PX4-powered fixed-wing craft, providing triple-redundant flight safety through battery management, sensor health monitoring, and mission supervision.
 
