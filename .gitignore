@@ -2,3 +2,6 @@
 .vscode/browse.vc.db
 .vscode/browse.vc.db
 .vscode/browse.vc.db
+build/
+install/
+log/
