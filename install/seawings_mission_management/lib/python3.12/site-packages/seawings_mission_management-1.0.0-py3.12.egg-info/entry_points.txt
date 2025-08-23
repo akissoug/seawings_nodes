@@ -1,4 +1,0 @@
-[console_scripts]
-fault_detector = seawings_mission_management.fault_detector:main
-mission_supervisor = seawings_mission_management.mission_supervisor:main
-power_monitor = seawings_mission_management.power_monitor:main
