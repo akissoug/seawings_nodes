@@ -1,0 +1,6 @@
+source;share/seawings_mission_management/hook/pythonpath.ps1
+source;share/seawings_mission_management/hook/pythonpath.dsv
+source;share/seawings_mission_management/hook/pythonpath.sh
+source;share/seawings_mission_management/hook/ament_prefix_path.ps1
+source;share/seawings_mission_management/hook/ament_prefix_path.dsv
+source;share/seawings_mission_management/hook/ament_prefix_path.sh

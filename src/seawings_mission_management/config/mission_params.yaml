@@ -1,0 +1,100 @@
+# SeaWings Parameters Configuration
+
+power_monitor_multi_mission:
+  ros__parameters:
+    # Battery Management
+    rtl_battery_remaining: 30.0          # Battery % threshold for RTL
+    battery_check_interval: 5.0          # How often to check battery (seconds)
+    battery_capacity_mah: 2000.0         # Battery capacity in mAh
+    min_current_threshold: 0.1           # Minimum current for calculations (A)
+    current_averaging_window: 10         # Number of samples for current averaging
+    
+    # Mission Parameters  
+    mission_start_grace_period: 30.0     # Grace period after mission start (seconds)
+    min_flight_time_before_rtl: 20.0     # Minimum flight time before allowing RTL (seconds)
+    home_position_timeout: 30.0          # Timeout for home position acquisition (seconds)
+    
+    # Return Planning
+    safety_margin: 0.4                   # 40% safety margin for return calculations
+    average_return_speed: 15.0           # Expected return speed (m/s)
+    loiter_radius: 80.0                  # Fixed-wing loiter radius (meters)
+    
+    # Command Management
+    rtl_reset_timeout: 60.0              # Timeout to reset RTL state (seconds)
+    command_cooldown: 5.0                # Cooldown between commands (seconds)
+    max_command_retries: 3               # Maximum RTL command retries
+    
+    # WIG Effect Tracking (informational only)
+    wing_span: 5.5                       # Aircraft wingspan (meters)
+    wig_height_threshold: 11.0           # Track WIG below this altitude (meters)
+    min_safe_altitude: 1.5               # Minimum safe altitude (meters)
+    
+    # Mode Settings
+    sitl_mode: true                      # Set to false for real craft
+    enable_rtl_trigger: true             # Enable/disable RTL triggering
+
+fault_detector:
+  ros__parameters:
+    # GPS Parameters
+    gps_timeout: 30.0                    # GPS data timeout (seconds)
+    min_satellites: 8                    # Minimum satellites for healthy GPS
+    min_fix_type: 3                      # Minimum GPS fix type (3 = 3D fix)
+    gps_failure_count_threshold: 6       # Consecutive failures before RTL
+    
+    # IMU Parameters
+    imu_timeout: 5.0                     # IMU data timeout (seconds)
+    max_imu_inconsistency: 0.5           # Max IMU inconsistency (rad/s or m/s²)
+    
+    # Magnetometer Parameters
+    mag_timeout: 10.0                    # Magnetometer timeout (seconds)
+    max_mag_inconsistency: 0.3           # Max magnetometer inconsistency (gauss)
+    
+    # Barometer Parameters
+    baro_timeout: 10.0                   # Barometer timeout (seconds)
+    
+    # RC Parameters
+    rc_timeout: 10.0                     # RC signal timeout (seconds)
+    min_rc_quality: 50                   # Minimum RC signal quality (%)
+    
+    # Estimator Parameters
+    estimator_timeout: 30.0              # Estimator timeout (seconds)
+    
+    # General Parameters
+    check_interval: 5.0                  # Health check interval (seconds)
+    startup_grace_period: 45.0           # Startup grace period (seconds)
+    mission_start_grace_period: 45.0     # Mission start grace (seconds)
+    min_flight_time_before_emergency: 30.0  # Min flight time before emergency (seconds)
+    min_altitude_for_emergency: 30.0     # Min altitude for emergency actions (meters)
+    command_cooldown: 15.0               # Command cooldown (seconds)
+    
+    # Mode Settings
+    sitl_mode: true                      # Set to false for real craft
+    enable_sensor_checks: true           # Enable additional sensor checks
+
+mission_supervisor:
+  ros__parameters:
+    # Mission Limits
+    mission_timeout: 5400.0              # Maximum mission duration (90 minutes)
+    waypoint_timeout: 300.0              # Timeout per waypoint (5 minutes)
+    max_mission_retries: 2               # Maximum mission retry attempts
+    
+    # Stuck Detection
+    stuck_detection_radius: 50.0         # Radius for stuck detection (meters)
+    stuck_detection_time: 60.0           # Time threshold for stuck detection (seconds)
+    enable_stuck_detection: true         # Enable/disable stuck detection
+    
+    # Loiter Detection
+    loiter_detection_time: 10.0          # Time to detect loiter state (seconds)
+    
+    # General Parameters
+    check_interval: 3.0                  # Supervision check interval (seconds)
+    startup_grace_period: 30.0           # Startup grace period (seconds)
+    mission_start_grace_period: 45.0     # Mission start grace (seconds)
+    command_cooldown: 15.0               # Command cooldown (seconds)
+    min_altitude_for_actions: 20.0       # Min altitude for supervisor actions (meters)
+    
+    # Features
+    enable_geofence_monitoring: true     # Enable geofence violation detection
+    
+    # Mode Settings
+    sitl_mode: true                      # Set to false for real craft

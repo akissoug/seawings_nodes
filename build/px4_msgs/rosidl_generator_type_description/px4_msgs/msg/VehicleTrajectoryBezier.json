@@ -1,0 +1,96 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "px4_msgs/msg/VehicleTrajectoryBezier",
+      "fields": [
+        {
+          "name": "timestamp",
+          "type": {
+            "type_id": 9,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        },
+        {
+          "name": "control_points",
+          "type": {
+            "type_id": 49,
+            "capacity": 5,
+            "string_capacity": 0,
+            "nested_type_name": "px4_msgs/msg/TrajectoryBezier"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "bezier_order",
+          "type": {
+            "type_id": 3,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": [
+      {
+        "type_name": "px4_msgs/msg/TrajectoryBezier",
+        "fields": [
+          {
+            "name": "timestamp",
+            "type": {
+              "type_id": 9,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "position",
+            "type": {
+              "type_id": 58,
+              "capacity": 3,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "yaw",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "delta",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      }
+    ]
+  },
+  "type_hashes": [
+    {
+      "type_name": "px4_msgs/msg/VehicleTrajectoryBezier",
+      "hash_string": "RIHS01_9f4f183d25281f63be8aa8008e6b0af0b3837e64452af0583730ba810421ecbc"
+    },
+    {
+      "type_name": "px4_msgs/msg/TrajectoryBezier",
+      "hash_string": "RIHS01_bb66c4d5777211fe924f9e8650cd57d21e6600b3ab50deba9f4f639fcd96b87d"
+    }
+  ]
+}

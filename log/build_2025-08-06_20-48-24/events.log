@@ -1,0 +1,4 @@
+[0.000000] (-) TimerEvent: {}
+[0.000509] (-) JobUnselected: {'identifier': 'px4_msgs'}
+[0.000557] (-) JobUnselected: {'identifier': 'seawings_mission_management'}
+[0.000721] (-) EventReactorShutdown: {}

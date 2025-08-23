@@ -1,0 +1,24 @@
+running egg_info
+writing ../../build/seawings_mission_management/seawings_mission_management.egg-info/PKG-INFO
+writing dependency_links to ../../build/seawings_mission_management/seawings_mission_management.egg-info/dependency_links.txt
+writing entry points to ../../build/seawings_mission_management/seawings_mission_management.egg-info/entry_points.txt
+writing requirements to ../../build/seawings_mission_management/seawings_mission_management.egg-info/requires.txt
+writing top-level names to ../../build/seawings_mission_management/seawings_mission_management.egg-info/top_level.txt
+reading manifest file '../../build/seawings_mission_management/seawings_mission_management.egg-info/SOURCES.txt'
+writing manifest file '../../build/seawings_mission_management/seawings_mission_management.egg-info/SOURCES.txt'
+running build
+running build_py
+copying seawings_mission_management/power_monitor.py -> /home/soug/sw_ws/build/seawings_mission_management/build/lib/seawings_mission_management
+running install
+running install_lib
+copying /home/soug/sw_ws/build/seawings_mission_management/build/lib/seawings_mission_management/power_monitor.py -> /home/soug/sw_ws/install/seawings_mission_management/lib/python3.12/site-packages/seawings_mission_management
+byte-compiling /home/soug/sw_ws/install/seawings_mission_management/lib/python3.12/site-packages/seawings_mission_management/power_monitor.py to power_monitor.cpython-312.pyc
+running install_data
+running install_egg_info
+removing '/home/soug/sw_ws/install/seawings_mission_management/lib/python3.12/site-packages/seawings_mission_management-1.0.0-py3.12.egg-info' (and everything under it)
+Copying ../../build/seawings_mission_management/seawings_mission_management.egg-info to /home/soug/sw_ws/install/seawings_mission_management/lib/python3.12/site-packages/seawings_mission_management-1.0.0-py3.12.egg-info
+running install_scripts
+Installing fault_detector script to /home/soug/sw_ws/install/seawings_mission_management/lib/seawings_mission_management
+Installing mission_supervisor script to /home/soug/sw_ws/install/seawings_mission_management/lib/seawings_mission_management
+Installing power_monitor script to /home/soug/sw_ws/install/seawings_mission_management/lib/seawings_mission_management
+writing list of installed files to '/home/soug/sw_ws/build/seawings_mission_management/install.log'
