@@ -854,7 +854,7 @@ class PowerMonitorMultiMission(Node):
                 log_parts.append(f'🔁 RTL: {return_time/60:.1f}min')
             
             if altitude:
-                log_parts.append(f'📏 Alt: {altitude:.1f}m')
+                log_parts.append(f'📏 Alt: {altitude:.1f}m (AGL)')
                 if self.in_wig_effect:
                     # Show WIG info but make it clear it's informational only
                     log_parts.append(f'🌊 WIG: +{self.current_wig_efficiency*100:.0f}% (info only)')
