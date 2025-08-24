@@ -408,10 +408,11 @@ class MissionSupervisor(Node):
             
             # Check mission completion
             if hasattr(msg, 'finished') and msg.finished:
-                if hasattr(msg, 'success') and msg.success:
-                    self.handle_mission_success()
-                else:
+                if hasattr(msg, 'failure') and msg.failure:
                     self.handle_mission_failure()
+                else:
+                    self.handle_mission_success()
+
     
     def geofence_callback(self, msg):
         with self.data_lock:
