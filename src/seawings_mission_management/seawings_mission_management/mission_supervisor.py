@@ -259,7 +259,7 @@ class MissionSupervisor(Node):
         
     def detect_mission_start(self, current_mode, previous_mode):
         """
-        Unified mission start detection logic
+        Mission start detection logic
         
         A NEW mission is detected when entering AUTO.MISSION or AUTO.TAKEOFF from:
         1. Manual control modes (MANUAL, POSITION, etc.)
