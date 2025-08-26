@@ -46,7 +46,7 @@
 ### Steps:
 1. **Modify power_monitor parameters** before starting:
    ```yaml
-   rtl_battery_remaining: 85.0  # High threshold for quick trigger
+   rtl_battery_remaining: 90.0  # High threshold for quick trigger
    ```
 2. **Start mission normally**
 3. **Wait for battery to drop below 85%** (usually 1-2 minutes in SITL)
