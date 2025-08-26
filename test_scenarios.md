@@ -111,30 +111,22 @@
 
 ---
 
-## TEST SCENARIO 5: Multi-Mission Session 
-**Demonstrates:** Session tracking and mission counting
+## TEST SCENARIO 5: Power moinitor triggers RTL by calculating battery remaing time and battery needed to return home 
+
+**Demonstrates:** RTL and distance calculation
 
 ### Steps:
-1. **First Mission**:
-   - Arm, takeoff, run mission
-   - Trigger RTL
-   - Complete RTL, loiter at home
-   
-2. **Resume Mission** (without disarming):
-   - Switch to AUTO.MISSION
-   - All nodes: "Mission #2 started (Mission resume after RTL)"
-   
-3. **Land but stay armed**:
-   - Switch to AUTO.LAND
-   - After landing, stay armed
-   
-4. **Third Mission**:
-   - Something similar
-   
-5. **Disarm and show session statistics**:
-   - Total missions: 3
-   - Cumulative flight time
-   - Total battery used
+1. **Start mission normally**
+2. **Wait until RTL triggers**
+3. **Observe Power Monitor triggering RTL**:
+   - "⚠️ POWER MONITOR RTL NEEDED..."
+   - Other nodes log: "RTL detected (triggered by PX4 or other node)"
+4. **Watch RTL execution and loiter at home**
+
+### Key Points:
+- Only Power Monitor triggers on battery
+- Other nodes respect and log the trigger source
+- Correct battery time remaining calculation and comparison with time needed for home return  
 
 ---
 
