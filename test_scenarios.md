@@ -55,7 +55,6 @@
    - Other nodes log: "RTL detected (triggered by PX4 or other node)"
 5. **Watch RTL execution and loiter at home**
 6. **Switch back to AUTO.MISSION**
-   - All nodes log: "Mission #2 started (Mission resume after RTL)"
 
 ### Key Points:
 - Only Power Monitor triggers on battery
