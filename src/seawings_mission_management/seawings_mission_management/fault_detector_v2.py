@@ -57,8 +57,8 @@ class FaultDetector(Node):
                 
                 # General parameters
                 ('check_interval', 5.0),
-                ('startup_grace_period', 45.0),
-                ('mission_start_grace_period', 45.0),
+                ('startup_grace_period', 30.0),
+                ('mission_start_grace_period', 30.0),
                 ('min_flight_time_before_emergency', 30.0),
                 ('min_altitude_for_emergency', 30.0),
                 ('command_cooldown', 15.0),
