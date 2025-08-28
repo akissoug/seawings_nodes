@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
 MISSION SUPERVISOR NODE - IMPROVED VERSION
-Monitors mission execution quality (waypoint progress, stuck detection, geofence)
 """
 
 import rclpy
