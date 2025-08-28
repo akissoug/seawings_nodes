@@ -16,6 +16,7 @@ import time
 from threading import Lock
 from collections import deque
 import json
+from rcl_interfaces.msg import SetParametersResult
 
 class FaultDetector(Node):
     def __init__(self):
@@ -27,7 +28,7 @@ class FaultDetector(Node):
             parameters=[
                 # GPS parameters
                 ('gps_timeout', 30.0),
-                ('min_satellites', 8),
+                ('min_satellites', 10),
                 ('min_fix_type', 3),
                 ('gps_failure_count_threshold', 6),
                 
@@ -57,10 +58,10 @@ class FaultDetector(Node):
                 
                 # General parameters
                 ('check_interval', 5.0),
-                ('startup_grace_period', 30.0),
-                ('mission_start_grace_period', 30.0),
-                ('min_flight_time_before_emergency', 30.0),
-                ('min_altitude_for_emergency', 30.0),
+                ('startup_grace_period', 20.0),
+                ('mission_start_grace_period', 20.0),
+                ('min_flight_time_before_emergency', 20.0),
+                ('min_altitude_for_emergency', 5.0),
                 ('command_cooldown', 15.0),
                 ('sitl_mode', True),
                 ('enable_sensor_checks', True),
@@ -92,6 +93,10 @@ class FaultDetector(Node):
         self.command_cooldown = self.get_parameter('command_cooldown').value
         self.sitl_mode = self.get_parameter('sitl_mode').value
         self.enable_sensor_checks = self.get_parameter('enable_sensor_checks').value
+
+        # Enable runtime parameter updates
+        self.add_on_set_parameters_callback(self.parameter_update_callback)
+
 
         # State variables
         self.sensor_data = {
@@ -251,7 +256,7 @@ class FaultDetector(Node):
         self.get_logger().info(f'📡 Monitoring Sensors:')
         
         if self.sitl_mode:
-            self.get_logger().info(f'  • GPS: 6+ sats, fix type ≥ 2 (relaxed for SITL)')
+            self.get_logger().info(f'  • GPS: {self.min_satellites} sats, fix type ≥ 2 (relaxed for SITL)')
             self.get_logger().info(f'  • Failure threshold: {self.gps_failure_threshold*2} consecutive')
             self.get_logger().info(f'  • Sensor checks: Limited in SITL')
         else:
@@ -319,18 +324,16 @@ class FaultDetector(Node):
         with self.data_lock:
             self.sensor_data['gps'] = msg
             self.last_gps_data_time = time.time()  # Always update when we get data
-            
             # Check GPS health
             # Adjust requirements for SITL
-            min_sats = 6 if self.sitl_mode else self.min_satellites
-            min_fix = 2 if self.sitl_mode else self.min_fix_type
+            min_sats = self.min_satellites if self.sitl_mode else self.min_satellites
+            min_fix = self.min_fix_type - 1 if self.sitl_mode else self.min_fix_type
             
             gps_healthy = (msg.fix_type >= min_fix and 
                           msg.satellites_used >= min_sats)
             
             # Always update timestamp when we receive data
             self.sensor_timestamps['gps'] = time.time()
-            
             if gps_healthy:
                 self.last_good_gps_time = time.time()
                 if self.consecutive_gps_failures > 0:
@@ -555,8 +558,8 @@ class FaultDetector(Node):
             gps = self.sensor_data['gps']
             
             # Adjust requirements for SITL
-            min_sats = 6 if self.sitl_mode else self.min_satellites
-            min_fix = 2 if self.sitl_mode else self.min_fix_type
+            min_sats = self.min_satellites if self.sitl_mode else self.min_satellites
+            min_fix = self.min_fix_type - 1 if self.sitl_mode else self.min_fix_type
             
             gps_ok = (gps.fix_type >= min_fix and
                      gps.satellites_used >= min_sats)
@@ -796,6 +799,14 @@ class FaultDetector(Node):
             msg = String()
             msg.data = json.dumps(status)
             self.fault_status_pub.publish(msg)
+
+
+    def parameter_update_callback(self, params):
+        for param in params:
+            if param.name == 'min_satellites':
+                self.min_satellites = param.value
+                self.get_logger().info(f"min_satellites updated to {self.min_satellites}")
+        return SetParametersResult(successful=True)
 
 def main(args=None):
     rclpy.init(args=args)
