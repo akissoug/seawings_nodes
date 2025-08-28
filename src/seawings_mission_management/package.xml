@@ -16,6 +16,7 @@
   <depend>nav_msgs</depend>
   <depend>sensor_msgs</depend>
   <depend>builtin_interfaces</depend>
+  <depend>rcl_interfaces</depend>
 
   <!-- PX4 dependencies -->
   <depend>px4_msgs</depend>
