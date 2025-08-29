@@ -12,6 +12,7 @@ from px4_msgs.msg import (
     VehicleAirData, RcChannels, VehicleGlobalPosition, DistanceSensor
 )
 from std_msgs.msg import String
+from rcl_interfaces.msg import SetParametersResult
 import time
 from threading import Lock
 from collections import deque
@@ -93,6 +94,9 @@ class FaultDetector(Node):
         self.sitl_mode = self.get_parameter('sitl_mode').value
         self.enable_sensor_checks = self.get_parameter('enable_sensor_checks').value
 
+        # Enable runtime parameter updates
+        self.add_on_set_parameters_callback(self.parameter_update_callback)
+
         # State variables
         self.sensor_data = {
             'gps': None,
@@ -152,6 +156,11 @@ class FaultDetector(Node):
         self.gps_health_history = deque(maxlen=10)
         self.last_good_gps_time = None
         self.last_gps_data_time = None  # Track when we last got ANY GPS data
+        
+        # Rate limiting for GPS log messages
+        self.last_gps_warning_time = 0
+        self.gps_warning_interval = 5.0  # Only log GPS warnings every 5 seconds
+        self.last_gps_warning_reason = ""
         
         # Rate limiting for log messages
         self.last_gps_warning_time = 0
@@ -256,7 +265,7 @@ class FaultDetector(Node):
         self.get_logger().info(f'📡 Monitoring Sensors:')
         
         if self.sitl_mode:
-            self.get_logger().info(f'  • GPS: 6+ sats, fix type ≥ 2 (relaxed for SITL)')
+            self.get_logger().info(f'  • GPS: {self.min_satellites} sats, fix type ≥ {self.min_fix_type - 1} (relaxed for SITL)')
             self.get_logger().info(f'  • Failure threshold: {self.gps_failure_threshold*2} consecutive')
             self.get_logger().info(f'  • GPS warning interval: {self.gps_warning_interval}s')
             self.get_logger().info(f'  • Sensor checks: Limited in SITL')
@@ -328,9 +337,9 @@ class FaultDetector(Node):
             self.last_gps_data_time = time.time()  # Always update when we get data
             
             # Check GPS health
-            # Adjust requirements for SITL
-            min_sats = 6 if self.sitl_mode else self.min_satellites
-            min_fix = 2 if self.sitl_mode else self.min_fix_type
+            # Adjust requirements for SITL (as in your original)
+            min_sats = self.min_satellites if self.sitl_mode else self.min_satellites
+            min_fix = self.min_fix_type - 1 if self.sitl_mode else self.min_fix_type
             
             gps_healthy = (msg.fix_type >= min_fix and 
                           msg.satellites_used >= min_sats)
@@ -351,9 +360,9 @@ class FaultDetector(Node):
                     # Build warning reason
                     reasons = []
                     if msg.fix_type < min_fix:
-                        reasons.append(f'fix={msg.fix_type} (need ≥{min_fix})')
+                        reasons.append(f'type={msg.fix_type} (need ≥{min_fix})')
                     if msg.satellites_used < min_sats:
-                        reasons.append(f'sats={msg.satellites_used} (need ≥{min_sats})')
+                        reasons.append(f'{msg.satellites_used} sats (need ≥{min_sats})')
                     
                     warning_reason = ', '.join(reasons)
                     
@@ -576,8 +585,8 @@ class FaultDetector(Node):
             gps = self.sensor_data['gps']
             
             # Adjust requirements for SITL (same as in gps_callback)
-            min_sats = 6 if self.sitl_mode else self.min_satellites
-            min_fix = 2 if self.sitl_mode else self.min_fix_type
+            min_sats = self.min_satellites if self.sitl_mode else self.min_satellites
+            min_fix = self.min_fix_type - 1 if self.sitl_mode else self.min_fix_type
             
             gps_ok = (gps.fix_type >= min_fix and
                      gps.satellites_used >= min_sats)
@@ -751,8 +760,8 @@ class FaultDetector(Node):
                         return
                     
                     # Determine reason (use adjusted values for SITL)
-                    min_sats = 6 if self.sitl_mode else self.min_satellites
-                    min_fix = 2 if self.sitl_mode else self.min_fix_type
+                    min_sats = self.min_satellites if self.sitl_mode else self.min_satellites
+                    min_fix = self.min_fix_type - 1 if self.sitl_mode else self.min_fix_type
                     
                     if self.sensor_data['gps'] is None:
                         reason = "No GPS data"
