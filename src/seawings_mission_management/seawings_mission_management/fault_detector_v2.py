@@ -30,7 +30,7 @@ class FaultDetector(Node):
                 ('gps_timeout', 30.0),
                 ('min_satellites', 8),
                 ('min_fix_type', 3),
-                ('gps_failure_count_threshold', 6),
+                ('gps_failure_count_threshold', 4),
                 
                 # IMU parameters
                 ('imu_timeout', 5.0),
@@ -58,8 +58,8 @@ class FaultDetector(Node):
                 
                 # General parameters
                 ('check_interval', 5.0),
-                ('startup_grace_period', 45.0),
-                ('mission_start_grace_period', 45.0),
+                ('startup_grace_period', 30.0),
+                ('mission_start_grace_period', 30.0),
                 ('min_flight_time_before_emergency', 30.0),
                 ('min_altitude_for_emergency', 30.0),
                 ('command_cooldown', 15.0),
