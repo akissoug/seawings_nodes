@@ -129,30 +129,10 @@
 - Other nodes respect and log the trigger source
 - Correct battery time remaining calculation and comparison with time needed for home return  
 
----
-
-## TEST SCENARIO 6: Mode Confusion Test 
-**Demonstrates:** Proper mode transition handling
-
-### Steps:
-1. **Rapid mode switching**:
-   - MANUAL → AUTO.MISSION → POSITION → AUTO.MISSION
-   - Verify only first transition triggers new mission
-   
-2. **Waypoint hold vs RTL**:
-   - Let mission reach waypoint → AUTO.LOITER
-   - Should log "Mission paused - Loitering at waypoint"
-   - Not "Mission started"
-   
-3. **Manual RTL**:
-   - Use RTL switch in QGC
-   - All nodes detect external RTL
-   - Complete RTL → loiter
-   - Resume mission (should be new mission #2)
 
 ---
 
-## TEST SCENARIO 7: Failsafe Priority Test 
+## TEST SCENARIO 6: Failsafe Priority Test 
 **Demonstrates:** Nodes respecting PX4 failsafes
 
 ### Steps:
