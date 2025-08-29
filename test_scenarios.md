@@ -143,8 +143,10 @@
    - "🚨 PX4 FAILSAFE ACTIVATED - Failsafe active | GCS connection lost, PX4 failsafe active - standing by" (these logs are on power_monitor node, in another version I will move them to the fault_detector node)
    - "⏸️ Mission paused - Loitering at waypoint"
    - No competing RTL commands, so nodes indicate that mission is on hold
+     
+3. **Open QGC again**
    
-3. **Clear failsafe** and continue
+4. **Clear failsafe** and continue
 
 ---
 
