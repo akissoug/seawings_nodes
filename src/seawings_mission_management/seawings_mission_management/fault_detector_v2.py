@@ -16,7 +16,6 @@ import time
 from threading import Lock
 from collections import deque
 import json
-from rcl_interfaces.msg import SetParametersResult
 
 class FaultDetector(Node):
     def __init__(self):
@@ -28,7 +27,7 @@ class FaultDetector(Node):
             parameters=[
                 # GPS parameters
                 ('gps_timeout', 30.0),
-                ('min_satellites', 10),
+                ('min_satellites', 8),
                 ('min_fix_type', 3),
                 ('gps_failure_count_threshold', 6),
                 
@@ -58,10 +57,10 @@ class FaultDetector(Node):
                 
                 # General parameters
                 ('check_interval', 5.0),
-                ('startup_grace_period', 20.0),
-                ('mission_start_grace_period', 20.0),
-                ('min_flight_time_before_emergency', 20.0),
-                ('min_altitude_for_emergency', 5.0),
+                ('startup_grace_period', 45.0),
+                ('mission_start_grace_period', 45.0),
+                ('min_flight_time_before_emergency', 30.0),
+                ('min_altitude_for_emergency', 30.0),
                 ('command_cooldown', 15.0),
                 ('sitl_mode', True),
                 ('enable_sensor_checks', True),
@@ -93,10 +92,6 @@ class FaultDetector(Node):
         self.command_cooldown = self.get_parameter('command_cooldown').value
         self.sitl_mode = self.get_parameter('sitl_mode').value
         self.enable_sensor_checks = self.get_parameter('enable_sensor_checks').value
-
-        # Enable runtime parameter updates
-        self.add_on_set_parameters_callback(self.parameter_update_callback)
-
 
         # State variables
         self.sensor_data = {
@@ -157,6 +152,11 @@ class FaultDetector(Node):
         self.gps_health_history = deque(maxlen=10)
         self.last_good_gps_time = None
         self.last_gps_data_time = None  # Track when we last got ANY GPS data
+        
+        # Rate limiting for log messages
+        self.last_gps_warning_time = 0
+        self.gps_warning_interval = 5.0  # Only log GPS warnings every 5 seconds
+        self.last_gps_warning_reason = ""
 
         # QoS profile
         px4_qos_profile = QoSProfile(
@@ -256,12 +256,14 @@ class FaultDetector(Node):
         self.get_logger().info(f'📡 Monitoring Sensors:')
         
         if self.sitl_mode:
-            self.get_logger().info(f'  • GPS: {self.min_satellites} sats, fix type ≥ 2 (relaxed for SITL)')
+            self.get_logger().info(f'  • GPS: 6+ sats, fix type ≥ 2 (relaxed for SITL)')
             self.get_logger().info(f'  • Failure threshold: {self.gps_failure_threshold*2} consecutive')
+            self.get_logger().info(f'  • GPS warning interval: {self.gps_warning_interval}s')
             self.get_logger().info(f'  • Sensor checks: Limited in SITL')
         else:
             self.get_logger().info(f'  • GPS: {self.min_satellites} sats, fix type ≥ {self.min_fix_type}')
             self.get_logger().info(f'  • Failure threshold: {self.gps_failure_threshold} consecutive')
+            self.get_logger().info(f'  • GPS warning interval: {self.gps_warning_interval}s')
             if self.enable_sensor_checks:
                 self.get_logger().info(f'  • IMU: max inconsistency {self.max_imu_inconsistency}')
                 self.get_logger().info(f'  • Magnetometer: max inconsistency {self.max_mag_inconsistency}')
@@ -324,27 +326,43 @@ class FaultDetector(Node):
         with self.data_lock:
             self.sensor_data['gps'] = msg
             self.last_gps_data_time = time.time()  # Always update when we get data
+            
             # Check GPS health
             # Adjust requirements for SITL
-            min_sats = self.min_satellites if self.sitl_mode else self.min_satellites
-            min_fix = self.min_fix_type - 1 if self.sitl_mode else self.min_fix_type
+            min_sats = 6 if self.sitl_mode else self.min_satellites
+            min_fix = 2 if self.sitl_mode else self.min_fix_type
             
             gps_healthy = (msg.fix_type >= min_fix and 
                           msg.satellites_used >= min_sats)
             
             # Always update timestamp when we receive data
             self.sensor_timestamps['gps'] = time.time()
+            
             if gps_healthy:
                 self.last_good_gps_time = time.time()
                 if self.consecutive_gps_failures > 0:
                     self.get_logger().info(f'✅ GPS recovered after {self.consecutive_gps_failures} failures')
                 self.consecutive_gps_failures = 0
+                self.last_gps_warning_reason = ""  # Clear warning reason
             else:
-                # Log why GPS is unhealthy
-                if msg.fix_type < min_fix:
-                    self.get_logger().warn(f'⚠️ GPS fix degraded: type={msg.fix_type} (need ≥{min_fix})')
-                if msg.satellites_used < min_sats:
-                    self.get_logger().warn(f'⚠️ GPS satellites low: {msg.satellites_used} (need ≥{min_sats})')
+                # Rate-limited logging for GPS issues
+                current_time = time.time()
+                if current_time - self.last_gps_warning_time > self.gps_warning_interval:
+                    # Build warning reason
+                    reasons = []
+                    if msg.fix_type < min_fix:
+                        reasons.append(f'fix={msg.fix_type} (need ≥{min_fix})')
+                    if msg.satellites_used < min_sats:
+                        reasons.append(f'sats={msg.satellites_used} (need ≥{min_sats})')
+                    
+                    warning_reason = ', '.join(reasons)
+                    
+                    # Only log if reason changed or enough time passed
+                    if warning_reason != self.last_gps_warning_reason or \
+                       current_time - self.last_gps_warning_time > self.gps_warning_interval * 2:
+                        self.get_logger().warn(f'⚠️ GPS degraded: {warning_reason}')
+                        self.last_gps_warning_time = current_time
+                        self.last_gps_warning_reason = warning_reason
                 
             self.gps_health_history.append(gps_healthy)
 
@@ -557,9 +575,9 @@ class FaultDetector(Node):
         else:
             gps = self.sensor_data['gps']
             
-            # Adjust requirements for SITL
-            min_sats = self.min_satellites if self.sitl_mode else self.min_satellites
-            min_fix = self.min_fix_type - 1 if self.sitl_mode else self.min_fix_type
+            # Adjust requirements for SITL (same as in gps_callback)
+            min_sats = 6 if self.sitl_mode else self.min_satellites
+            min_fix = 2 if self.sitl_mode else self.min_fix_type
             
             gps_ok = (gps.fix_type >= min_fix and
                      gps.satellites_used >= min_sats)
@@ -732,12 +750,15 @@ class FaultDetector(Node):
                         self.get_logger().warn(f'GPS critical but altitude too low ({self.current_altitude:.1f}m)')
                         return
                     
-                    # Determine reason
+                    # Determine reason (use adjusted values for SITL)
+                    min_sats = 6 if self.sitl_mode else self.min_satellites
+                    min_fix = 2 if self.sitl_mode else self.min_fix_type
+                    
                     if self.sensor_data['gps'] is None:
                         reason = "No GPS data"
-                    elif self.sensor_data['gps'].fix_type < (2 if self.sitl_mode else self.min_fix_type):
+                    elif self.sensor_data['gps'].fix_type < min_fix:
                         reason = f"GPS fix lost (type={self.sensor_data['gps'].fix_type})"
-                    elif self.sensor_data['gps'].satellites_used < (6 if self.sitl_mode else self.min_satellites):
+                    elif self.sensor_data['gps'].satellites_used < min_sats:
                         reason = f"Low satellites ({self.sensor_data['gps'].satellites_used})"
                     else:
                         reason = "GPS timeout"
@@ -799,14 +820,6 @@ class FaultDetector(Node):
             msg = String()
             msg.data = json.dumps(status)
             self.fault_status_pub.publish(msg)
-
-
-    def parameter_update_callback(self, params):
-        for param in params:
-            if param.name == 'min_satellites':
-                self.min_satellites = param.value
-                self.get_logger().info(f"min_satellites updated to {self.min_satellites}")
-        return SetParametersResult(successful=True)
 
 def main(args=None):
     rclpy.init(args=args)
