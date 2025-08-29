@@ -95,15 +95,18 @@
 ### Steps:
 1. **Create a mission**:
 2. **Start mission**
-3. **Vehicle will loiter to a waypoint**
-4. **After 60 seconds**, Mission Supervisor detects stuck:
+3. **Left click on the map to a spesific point and select Go to location**
+4. **Vehicle will loiter to this point**
+5. **After ~90 seconds**, Mission Supervisor detects stuck:
    - "⚠️ Vehicle stuck! Moved only Xm in 60s"
-   - Triggers RTL
-5. **Show statistics with stuck events**
+   - Just warn in SITL, triggers RTL if in real mission
+6. **Select continue mission from current waypoint to resume mission**
+   - "▶️ Mission resumed from waypoint hold"
+
 
 ### Alternative - Manual Stuck:
 1. During mission, switch to POSITION mode
-2. Hold position for 60+ seconds
+2. Hold position for 90+ seconds
 3. Switch back to AUTO.MISSION
 4. Supervisor detects lack of progress
 
