@@ -137,12 +137,12 @@
 
 ### Steps:
 1. **Trigger PX4 failsafe** (if possible):
-   - Set very low battery failsafe in PX4 (if configurable)
-   - Or trigger RC failsafe by closing QGC
+   - Trigger RC failsafe by closing QGC
    
 2. **Observe all nodes standing down**:
-   - "PX4 failsafe active - standing by"
-   - No competing RTL commands
+   - "🚨 PX4 FAILSAFE ACTIVATED - Failsafe active | GCS connection lost, PX4 failsafe active - standing by" (these logs are on power_monitor node, in another version I will move them to the fault_detector node)
+   - "⏸️ Mission paused - Loitering at waypoint"
+   - No competing RTL commands, so nodes indicate that mission is on hold
    
 3. **Clear failsafe** and continue
 
