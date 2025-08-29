@@ -93,11 +93,9 @@
 **Demonstrates:** Mission Supervisor's stuck detection
 
 ### Steps:
-1. **Create a mission with a problematic waypoint**:
-   - Set one waypoint acceptance radius very small (1m)
-   - Or set one waypoint inside an obstacle
+1. **Create a mission**:
 2. **Start mission**
-3. **Vehicle will loiter trying to reach waypoint**
+3. **Vehicle will loiter to a waypoint**
 4. **After 60 seconds**, Mission Supervisor detects stuck:
    - "⚠️ Vehicle stuck! Moved only Xm in 60s"
    - Triggers RTL
