@@ -145,8 +145,7 @@
    - No competing RTL commands, so nodes indicate that mission is on hold
      
 3. **Open QGC again**
-   
-4. **Clear failsafe** and continue
+    = It clears failsafe and continues mission
 
 ---
 
