@@ -2,7 +2,7 @@
 
 ## 📊 Available Diagrams
 
-I've created 5 comprehensive diagrams for understanding how nodes work:
+You can find below 6 comprehensive diagrams for understanding how nodes work:
 
 ### 1. **Power Monitor Node Diagram** (`seawings_power_monitor_diagram`)
 - Shows battery monitoring and RTL decision flow
