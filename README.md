@@ -221,3 +221,5 @@ float ibatt = -1.0f; // no current sensor in simulation
 #Instead add this: 
 float ibatt = _armed ? 15.0f : 0.0f;  // Fixed 2A when armed, 0A when disarmed
 
+
+
