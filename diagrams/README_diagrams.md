@@ -76,4 +76,4 @@ The diagrams work together to show:
 - `>` : Data flow/sequence
 - `:` : Conditional flow with label
 
-These diagrams provide a complete visual representation of your SeaWings safety system architecture!
+These diagrams provide a complete visual representation of the system architecture.
