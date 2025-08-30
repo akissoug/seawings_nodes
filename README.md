@@ -21,6 +21,8 @@ Each node operates independently with clear separation of duties, preventing con
 - **Session statistics**: Tracks performance across multiple missions
 - **Graceful coordination**: Nodes respect each other's decisions and PX4 failsafes
 
+  In the diagrams directory there ara diagrams explaining the stracture of each node and also the way that the whole system works. At some points there may be some minor changes due to node optimisation.
+
 ##  Prerequisites
 
 
