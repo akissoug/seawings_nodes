@@ -226,7 +226,7 @@ float ibatt = _armed ? 15.0f : 0.0f;  // Fixed 2A when armed, 0A when disarmed
 
 ## Set these parameters in QGC
 
-Go to Vehicle Configuration > Safety > Tools > Load from file and select the file located in your system which will contain the following:
+Go to Vehicle Configuration > Safety > Tools > Load from file and select the file (IMPORTANT: It should have .params extension) located in your system which will contain the following:
 
 ```bash
 # Onboard parameters for Vehicle 1
