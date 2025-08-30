@@ -33,7 +33,9 @@ I've created 5 comprehensive diagrams for understanding how nodes work:
 - Shows 6 cases for mission start detection
 - Illustrates state transitions and updates
 - Helps understand consistent behavior across nodes
-
+  
+### 6. **Overall diagram**
+- A high level version of all the above
 
 ## 📊 Diagram Relationships
 
