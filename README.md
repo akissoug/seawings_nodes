@@ -202,6 +202,9 @@ gedit dds_topics.yaml
   
   - topic: /fmu/out/rc_channels
     type: px4_msgs::msg::RcChannels
+
+  - topic: /fmu/out/distance_sensor
+    type: px4_msgs::msg::DistanceSensor
     
 
 #Run the following command in terminal
